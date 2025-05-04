@@ -1,4 +1,4 @@
-# Animal Support App
+# STREETPAWS : Animal Support App
 
 ## Description
 
