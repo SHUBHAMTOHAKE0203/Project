@@ -1,37 +1,24 @@
-// import React, { useEffect, useState } from 'react';
-// import { db } from '../../firebase';
-// import { ref,onValue } from 'firebase/database';
-
-// export default function Dashboard({ user }) {
-//   const [data, setData] = useState(null);
-
-//   useEffect(() => {
-//     const userRef = ref(db, 'users/' + user.uid);
-//     onValue(userRef, (snapshot) => {
-//       setData(snapshot.val());
-//     });
-//   }, [user]);
-
-//   if (!data) return <div>Loading...</div>;
-
-//   return (
-//     <div>
-//       <h1>Welcome, {data.name}</h1>
-//       <p>Email: {data.email}</p>
-//       {data.photoURL && <img src={data.photoURL} alt="Profile" width={100} />}
-//       <p>Photo URL: {data.photoURL}</p>
-
-//     </div>
-//   );
-// }
-
-
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { ref, onValue } from 'firebase/database';
 import { Mail, User, Image, Clock, Calendar, Bell, Settings, LogOut } from 'lucide-react';
-
+import UploadForm from './UploadForm';
+import axios from 'axios';
 export default function Dashboard({ user }) {
+  const [location, setLocation] = useState(null);
+  const [spots, setSpots] = useState([]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setLocation([pos.coords.latitude, pos.coords.longitude]);
+    });
+    fetchSpots();
+  }, []);
+
+  const fetchSpots = async () => {
+    const res = await axios.get('http://localhost:4000/spots');
+    setSpots(res.data);
+  };
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,15 +28,15 @@ export default function Dashboard({ user }) {
       setData(snapshot.val());
       setIsLoading(false);
     });
-    
+
     return () => unsubscribe();
   }, [user]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="w-16 h-16 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
@@ -58,7 +45,7 @@ export default function Dashboard({ user }) {
 
   if (!data) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="text-center p-6 max-w-sm bg-white rounded-lg shadow-md">
           <div className="text-red-500 mb-4">
             <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,43 +60,19 @@ export default function Dashboard({ user }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-white to-amber-50">
       {/* Top Navigation */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="bg-blue-600 rounded-md p-2 mr-3">
-              <User className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-500 hover:text-gray-700">
-              <Bell className="h-5 w-5" />
-            </button>
-            <button className="text-gray-500 hover:text-gray-700">
-              <Settings className="h-5 w-5" />
-            </button>
-            <button className="bg-red-50 text-red-600 hover:bg-red-100 p-1 rounded-full">
-              <LogOut className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </header>
+     
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-32"></div>
+          <div className="bg-gradient-to-r from-amber-600 to-amber-500 h-32"></div>
           <div className="relative px-6 pb-6">
             <div className="absolute -top-12">
               <div className="rounded-full border-4 border-white overflow-hidden bg-gray-200 w-24 h-24 flex items-center justify-center">
                 {data.photoURL ? (
-                  <img 
-                    src={data.photoURL} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover" 
-                  />
+                  <img src={data.photoURL} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <User className="h-12 w-12 text-gray-400" />
                 )}
@@ -122,7 +85,7 @@ export default function Dashboard({ user }) {
                 <span>{data.email}</span>
               </div>
               <div className="mt-4 flex items-center">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
                   Active User
                 </span>
                 <span className="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
@@ -139,7 +102,7 @@ export default function Dashboard({ user }) {
           {/* Account Info */}
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center mb-4">
-              <User className="h-5 w-5 text-blue-600 mr-2" />
+              <User className="h-5 w-5 text-amber-600 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Account Information</h3>
             </div>
             <div className="space-y-3">
@@ -155,22 +118,23 @@ export default function Dashboard({ user }) {
                 <p className="text-sm text-gray-500">Account Created</p>
                 <p className="font-medium">{new Date().toLocaleDateString()}</p>
               </div>
+              <p className="text-sm text-gray-500">Post Rescue</p>
+              <div className="bg-white/10 rounded-lg p-6 shadow-lg mb-6 backdrop-blur-sm">
+              
+                    <UploadForm location={location} fetchSpots={fetchSpots} />
+                  </div>
             </div>
           </div>
 
           {/* Profile Image */}
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center mb-4">
-              <Image className="h-5 w-5 text-blue-600 mr-2" />
+              <Image className="h-5 w-5 text-amber-600 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Profile Image</h3>
             </div>
             <div className="flex flex-col items-center justify-center h-48 bg-gray-50 rounded-lg border border-gray-200">
               {data.photoURL ? (
-                <img 
-                  src={data.photoURL} 
-                  alt="Profile" 
-                  className="max-h-40 max-w-full rounded shadow" 
-                />
+                <img src={data.photoURL} alt="Profile" className="max-h-40 max-w-full rounded shadow" />
               ) : (
                 <div className="text-center">
                   <User className="h-16 w-16 text-gray-300 mx-auto" />
@@ -182,7 +146,7 @@ export default function Dashboard({ user }) {
               <div className="text-xs text-gray-500 truncate">
                 <span className="font-medium">Image URL:</span> {data.photoURL || 'No URL available'}
               </div>
-              <button className="mt-2 w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              <button className="mt-2 w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700">
                 Update Image
               </button>
             </div>
@@ -191,14 +155,14 @@ export default function Dashboard({ user }) {
           {/* Activity */}
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center mb-4">
-              <Calendar className="h-5 w-5 text-blue-600 mr-2" />
+              <Calendar className="h-5 w-5 text-amber-600 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
             </div>
             <div className="space-y-4">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
-                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <User className="h-4 w-4 text-blue-600" />
+                  <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
+                    <User className="h-4 w-4 text-amber-600" />
                   </div>
                 </div>
                 <div className="ml-3">
@@ -215,6 +179,7 @@ export default function Dashboard({ user }) {
                 <div className="ml-3">
                   <p className="text-sm font-medium">Last login</p>
                   <p className="text-xs text-gray-500">Today, 9:30 AM</p>
+                  
                 </div>
               </div>
               <div className="flex items-start">
@@ -226,6 +191,8 @@ export default function Dashboard({ user }) {
                 <div className="ml-3">
                   <p className="text-sm font-medium">Settings changed</p>
                   <p className="text-xs text-gray-500">Yesterday</p>
+                  <h1 className="text-2xl font-bold mb-4 text-white">Animal Helpers Map</h1>
+                  
                 </div>
               </div>
             </div>

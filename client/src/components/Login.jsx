@@ -1,30 +1,3 @@
-// import React, { useState } from 'react';
-// import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../../firebase';
-
-// export default function Login({ onLogin }) {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const userCred = await signInWithEmailAndPassword(auth, email, password);
-//       onLogin(userCred.user);
-//     } catch (err) {
-//       alert(err.message);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleLogin}>
-//       <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-//       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
-//       <button type="submit">Login</button>
-//     </form>
-//   );
-// }
-
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
@@ -41,7 +14,7 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       onLogin(userCred.user);
@@ -53,7 +26,7 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
@@ -61,13 +34,13 @@ export default function Login({ onLogin }) {
             Enter your credentials to access your account
           </p>
         </div>
-        
+
         {error && (
           <div className="p-4 text-sm text-red-700 bg-red-100 rounded-md">
             {error}
           </div>
         )}
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
@@ -86,12 +59,12 @@ export default function Login({ onLogin }) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 text-sm"
                   placeholder="name@example.com"
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -103,12 +76,12 @@ export default function Login({ onLogin }) {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 text-sm"
                   placeholder="••••••••"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -134,7 +107,7 @@ export default function Login({ onLogin }) {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
               />
               <label htmlFor="remember-me" className="block ml-2 text-sm text-gray-900">
                 Remember me
@@ -142,7 +115,7 @@ export default function Login({ onLogin }) {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="#" className="font-medium text-amber-600 hover:text-amber-500">
                 Forgot your password?
               </a>
             </div>
@@ -152,15 +125,15 @@ export default function Login({ onLogin }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:bg-amber-300"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
-          
+
           <div className="text-center text-sm">
             <span className="text-gray-600">Don't have an account?</span>{' '}
-            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+            <a href="#" className="font-medium text-amber-600 hover:text-amber-500">
               Sign up
             </a>
           </div>
